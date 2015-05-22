@@ -6,8 +6,9 @@ import json
 response = json.load(open('.jsongit'))
 
 print response['message']
-for error in response['errors']:
-    print error['message']
+if 'errors' in response:
+  for error in response['errors']:
+    if 'message' in error: print error['message']
 END_OF_PYTHON
 }
 
@@ -16,7 +17,7 @@ function geturl {
 python <<END_OF_PYTHON  
 import json
 repo = json.load(open('.jsongit'))
-
+print repo['clone_url']
 END_OF_PYTHON
 
 }
