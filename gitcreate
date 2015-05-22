@@ -18,12 +18,14 @@ python <<END_OF_PYTHON
 import json
 repo = json.load(open('.jsongit'))
 print repo['clone_url']
+#print repo['ssh_url']
 END_OF_PYTHON
 
 }
 
 name=$1
-auth=$(cat gitauth)
+#auth=$(cat ~/BASH/github.cred)
+auth=$(cat /home/brandon/SpringOSU15/WEBDEV/git-creation-script/gitauth)
 json="{\"name\":\"$name\", \"description\":\"$2\"}"
 url="https://api.github.com/user/repos"
 
@@ -31,10 +33,19 @@ url="https://api.github.com/user/repos"
 htresp=$(curl --write-out %{http_code} --output .jsongit -u "$auth" $url -d "$json" )
 
 if [[ $htresp == 201 ]] ; then
-	echo "created github repo $name"
+	echo "created github repo: $name"
+  cloneurl=$(geturl)
+  rm .jsongit
+  set -e
+  git init
+  git add -A :/
+  git commit -m "first commit"
+  git remote add origin $cloneurl
+  git push -u origin master
 else
 	echo "FAILED: github response code $htresp"
 	showErrors
+  rm .jsongit
 	exit 1
 fi
 
