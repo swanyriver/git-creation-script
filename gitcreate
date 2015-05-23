@@ -41,6 +41,7 @@ if [[ $htresp == 201 ]] ; then
   git commit -m "first commit"
   git remote add origin $cloneurl
   git push -u origin master
+  exit 0
 else
 	echo "FAILED: github response code $htresp"
 	showErrors

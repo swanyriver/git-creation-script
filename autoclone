@@ -1,5 +1,17 @@
 #!/bin/bash
 
+function showErrors {
+python <<END_OF_PYTHON
+import json  
+response = json.load(open('.jsongit'))
+
+print response['message']
+if 'errors' in response:
+  for error in response['errors']:
+    if 'message' in error: print error['message']
+END_OF_PYTHON
+}
+
 function getCloneUrl {
 
 python <<END_OF_PYTHON
@@ -16,5 +28,14 @@ search="?q=$1+user:${username}&sort=updated"
 #returned output other than http response is lost, packet information shown	
 #htresp=$(curl --write-out %{http_code} --output .jsonsearch -u "$auth" $url -d "$json" )
 htresp=$(curl --write-out %{http_code} --output .searchJSON ${url}${search} )
-echo $htresp
 
+if [[ $htresp == 200 ]] ; then
+	
+  rm .searchJSON
+  exit 0
+else
+	echo "FAILED: github response code $htresp"
+	showErrors
+  rm .searchJSON
+	exit 1
+fi
