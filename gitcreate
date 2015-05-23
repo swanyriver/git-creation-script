@@ -17,23 +17,22 @@ function geturl {
 python <<END_OF_PYTHON  
 import json
 repo = json.load(open('.jsongit'))
-print repo['clone_url']
-#print repo['ssh_url']
+#print repo['clone_url']
+print repo['ssh_url']
 END_OF_PYTHON
 
 }
 
-name=$1
 #auth=$(cat ~/BASH/github.cred)
 auth=$(cat /home/brandon/SpringOSU15/WEBDEV/git-creation-script/gitauth)
-json="{\"name\":\"$name\", \"description\":\"$2\"}"
+json="{\"name\":\"$1\", \"description\":\"$2\"}"
 url="https://api.github.com/user/repos"
 
 #returned output other than http response is lost, packet information shown	
 htresp=$(curl --write-out %{http_code} --output .jsongit -u "$auth" $url -d "$json" )
 
 if [[ $htresp == 201 ]] ; then
-	echo "created github repo: $name"
+	echo "created github repo: $1"
   cloneurl=$(geturl)
   rm .jsongit
   set -e

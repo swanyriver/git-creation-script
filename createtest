@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#auth=$(cat ~/BASH/github.cred)
+auth=$(cat /home/brandon/SpringOSU15/WEBDEV/git-creation-script/gitauth)
+json="{\"name\":\"$1\", \"description\":\"$2\"}"
+url="https://api.github.com/user/repos"
+
+#returned output other than http response is lost, packet information shown	
+htresp=$(curl --write-out %{http_code} --output .jsongit -u "$auth" $url -d "$json" )
+
+
