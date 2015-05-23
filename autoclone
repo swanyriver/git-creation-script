@@ -17,6 +17,18 @@ function getCloneUrl {
 python <<END_OF_PYTHON
 import json
 response = json.load(open('.searchJSON'))
+print response['items'][$1]['ssh_url']
+END_OF_PYTHON
+
+}
+
+
+function getNumResults {
+
+python <<END_OF_PYTHON
+import json
+response = json.load(open('.searchJSON'))
+print response["total_count"]
 END_OF_PYTHON
 
 }
@@ -31,7 +43,17 @@ htresp=$(curl --write-out %{http_code} --output .searchJSON ${url}${search} )
 
 if [[ $htresp == 200 ]] ; then
 	
-  rm .searchJSON
+	numResults=$(getNumResults)
+	if [[ $numResults == 0 ]] ; then
+		echo "no results returned"
+		rm .searchJSON
+		exit 1
+	fi
+
+	#git clone $(getCloneUrl)
+	echo $(getCloneUrl 3)
+
+  #rm .searchJSON
   exit 0
 else
 	echo "FAILED: github response code $htresp"
