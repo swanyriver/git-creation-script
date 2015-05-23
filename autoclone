@@ -12,23 +12,33 @@ if 'errors' in response:
 END_OF_PYTHON
 }
 
+function getNumResults {
+
+python <<END_OF_PYTHON
+import json
+response = json.load(open('.searchJSON'))
+print response['total_count']
+END_OF_PYTHON
+
+}
+
+function getSelections {
+python <<END_OF_PYTHON
+import json
+response = json.load(open('.searchJSON'))
+max = int(response['total_count'])
+if max>10:max=10
+for i in range(max):
+	print "[" , i , "] " , response['items'][i]['name'] 
+END_OF_PYTHON
+}
+
 function getCloneUrl {
 
 python <<END_OF_PYTHON
 import json
 response = json.load(open('.searchJSON'))
 print response['items'][$1]['ssh_url']
-END_OF_PYTHON
-
-}
-
-
-function getNumResults {
-
-python <<END_OF_PYTHON
-import json
-response = json.load(open('.searchJSON'))
-print response["total_count"]
 END_OF_PYTHON
 
 }
@@ -50,10 +60,13 @@ if [[ $htresp == 200 ]] ; then
 		exit 1
 	fi
 
-	#git clone $(getCloneUrl)
-	echo $(getCloneUrl 3)
+	getSelections
+	echo -n "Wich would you like to clone:"
+	read selected
+	
+	git clone $(getCloneUrl $selected)
 
-  #rm .searchJSON
+  rm .searchJSON
   exit 0
 else
 	echo "FAILED: github response code $htresp"
