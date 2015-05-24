@@ -32,7 +32,7 @@ url="https://api.github.com/user/repos"
 htresp=$(curl --write-out %{http_code} --output .jsongit -u "$auth" $url -d "$json" )
 
 if [[ $htresp == 201 ]] ; then
-	echo "created github repo: $1"
+  echo "created github repo: $1"
   cloneurl=$(geturl)
   rm .jsongit
   set -e
@@ -43,10 +43,10 @@ if [[ $htresp == 201 ]] ; then
   git push -u origin master
   exit 0
 else
-	echo "FAILED: github response code $htresp"
-	showErrors
+  echo "FAILED: github response code $htresp"
+  showErrors
   rm .jsongit
-	exit 1
+  exit 1
 fi
 
 
