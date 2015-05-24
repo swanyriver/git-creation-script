@@ -29,7 +29,7 @@ response = json.load(open('.searchJSON'))
 max = int(response['total_count'])
 if max>10:max=10
 for i in range(max):
-	print "[" , i , "] " , response['items'][i]['name'] 
+  print "[" , i , "] " , response['items'][i]['name'] 
 END_OF_PYTHON
 }
 
@@ -47,30 +47,30 @@ username="swanyriver"
 url="https://api.github.com/search/repositories"
 search="?q=$1+user:${username}&sort=updated"
 
-#returned output other than http response is lost, packet information shown	
+#returned output other than http response is lost, packet information shown  
 #htresp=$(curl --write-out %{http_code} --output .jsonsearch -u "$auth" $url -d "$json" )
 htresp=$(curl --write-out %{http_code} --output .searchJSON ${url}${search} )
 
 if [[ $htresp == 200 ]] ; then
-	
-	numResults=$(getNumResults)
-	if [[ $numResults == 0 ]] ; then
-		echo "no results returned"
-		rm .searchJSON
-		exit 1
-	fi
+  
+  numResults=$(getNumResults)
+  if [[ $numResults == 0 ]] ; then
+    echo "no results returned"
+    rm .searchJSON
+    exit 1
+  fi
 
-	getSelections
-	echo -n "Wich would you like to clone:"
-	read selected
-	
-	git clone $(getCloneUrl $selected)
+  getSelections
+  echo -n "Wich would you like to clone:"
+  read selected
+  
+  git clone $(getCloneUrl $selected)
 
   rm .searchJSON
   exit 0
 else
-	echo "FAILED: github response code $htresp"
-	showErrors
+  echo "FAILED: github response code $htresp"
+  showErrors
   rm .searchJSON
-	exit 1
+  exit 1
 fi
