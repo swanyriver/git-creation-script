@@ -3,7 +3,7 @@
 function showErrors {
 python <<END_OF_PYTHON
 import json  
-response = json.load(open('.jsongit'))
+response = json.load(open('.searchJSON'))
 
 print response['message']
 if 'errors' in response:
